@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.client.match.MockRestRequestMatchers;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -29,7 +30,7 @@ public class ControllerIT {
     PersistenceService persistenceService;
 
     @Test
-    public void shouldReturnReponse() throws Exception {
+    public void shouldReturnMessage() throws Exception {
         String requestedValue = "Prashant";
         mvc.perform(MockMvcRequestBuilders.get("/message").header("x-token", requestedValue))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -38,4 +39,13 @@ public class ControllerIT {
        Mockito.verify(persistenceService).update();
     }
 
+    @Test
+    public void shouldReturnListOfCustomers() throws Exception {
+        mvc.perform(MockMvcRequestBuilders.get("/customers"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.customers[0].id").value("1"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.customers[0].firstName").value("Prashant"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.customers[0].lastName").value("Naik"));
+
+    }
 }

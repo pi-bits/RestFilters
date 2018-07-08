@@ -1,6 +1,7 @@
 package com.serviceinfotech.filters.RestFilters.controller;
 
 import com.serviceinfotech.filters.RestFilters.config.Entity;
+import com.serviceinfotech.filters.RestFilters.service.CustomerService;
 import com.serviceinfotech.filters.RestFilters.service.PersistenceService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ public class Controller {
     PersistenceService persistenceService;
     @Autowired
     Entity clientEntity;
+    @Autowired
+    CustomerService customerService;
+
 
     @GetMapping("/message")
     public String getMessage(@RequestHeader(value = "x-token", required = true) String xToken) {
@@ -30,10 +34,6 @@ public class Controller {
 
     @GetMapping(value = "/customers",produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Customers> getCustomers() {
-        Customers customers = new Customers();
-        customers.add(new Customer(1,"Prashant", "Naik"));
-        customers.add(new Customer(2,"Alberto", "Garcia"));
-        customers.add(new Customer(3,"Suresh", "Appavu"));
-        return new ResponseEntity<Customers>(customers, HttpStatus.OK);
+        return new ResponseEntity<Customers>(customerService.getCustomers(), HttpStatus.OK);
     }
 }
